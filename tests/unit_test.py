@@ -22,8 +22,8 @@ def session():
 def test_select_weighted_prompt_with_data(session):
     """Tests that a weighted prompt is selected correctly."""
     session.add_all([
-        Prompt(prompt="Hello, world!", weight=1.0),
-        Prompt(prompt="How can I help?", weight=2.0)
+        Prompt(prompt="Hello, world!", name='Hello world', weight=1.0),
+        Prompt(prompt="How can I help?", name='Friendly message', weight=2.0)
     ])
     session.commit()
     
@@ -41,8 +41,8 @@ def test_select_weighted_prompt_no_data(session):
 def test_select_weighted_prompt_weight_distribution(session):
     """Tests that prompts with higher weights are selected more often."""
     session.add_all([
-        Prompt(prompt="Low weight", weight=1.0),
-        Prompt(prompt="High weight", weight=10.0)
+        Prompt(prompt="Low weight", name='low', weight=1.0),
+        Prompt(prompt="High weight", name='high', weight=10.0)
     ])
     session.commit()
     
