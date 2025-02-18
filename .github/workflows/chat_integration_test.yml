@@ -1,0 +1,66 @@
+name: Test Chat Endpoint
+
+on: [push, pull_request]
+
+jobs:
+  test-api:
+    runs-on: ubuntu-latest
+
+    services:
+      postgres:
+        image: postgres:13
+        env:
+          POSTGRES_USER: postgres
+          POSTGRES_PASSWORD: postgres
+          POSTGRES_DB: db
+        ports:
+          - 5432:5432
+        options: >-
+          --health-cmd pg_isready
+          --health-interval 10s
+          --health-timeout 5s
+          --health-retries 5
+    steps:
+    - name: Checkout code
+      uses: actions/checkout@v2
+
+    - name: Set up Python
+      uses: actions/setup-python@v3
+      with:
+        python-version: "3.10"
+        cache: "pip"
+
+    - name: Install dependencies
+      run: |
+        python -m pip install --upgrade pip
+        pip install -r requirements.txt
+    - name: Build Docker image
+      run: docker compose build
+
+    - name: Test API
+      env:
+        SUPER_SECRET_TOKEN: ${{ secrets.SUPER_SECRET_TOKEN }}
+      run: |
+        docker compose up -d
+        sleep 30
+        response=$(curl -s -o response.json -w "%{http_code}" -X POST http://localhost:8000/chat \
+          -H "Content-Type: application/json" \
+          -H "Authorization: Bearer $SUPER_SECRET_TOKEN" \
+          -d '{"message": "What is your favourite food?"}')
+        
+        if [ "$response" -ne 200 ]; then
+          echo "API request failed with status code $response"
+          cat response.json
+          exit 1
+        fi
+        content=$(jq -r '.content' response.json)
+        prompt_version=$(jq -r '.prompt_version' response.json)
+        prompt_weight=$(jq -r '.prompt_weight' response.json)
+        if [ -z "$content" ] || [ -z "$prompt_version" ] || [ -z "$prompt_weight" ]; then
+          echo "API response does not contain the required components"
+          cat response.json
+          exit 1
+        fi
+        echo "API response is valid"
+        cat response.json
+        docker compose down
