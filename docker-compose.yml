@@ -3,7 +3,7 @@ version: '3.9'
 services:
   python-api:
     build: .
-    container_name: python-api
+    container_name: star-wars-api
     ports:
       - "8000:8000"
     depends_on:
@@ -21,7 +21,7 @@ services:
   
   postgres:
     image: postgres:13
-    container_name: postgres
+    container_name: postgresdb
     environment:
       - POSTGRES_USER=${POSTGRES_USER:-username}
       - POSTGRES_PASSWORD=${POSTGRES_PASSWORD:-password}
