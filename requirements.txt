@@ -1,0 +1,7 @@
+flask==2.3.3
+sqlalchemy==2.0.20
+psycopg2-binary==2.9.7
+openai==0.28.0
+python-dotenv==1.0.0
+pytest==8.3.4
+gunicorn==23.0.0
