@@ -29,7 +29,7 @@ To chat with the LLM, use the following command
 
 ```sh
 
-curl -X POST http://localhost:8000/chat -H "Content-Type: application/json" -H "Authorization: Bearer $SUPER_SECRET_TOKEN" -d '{"message": "Hey, I'\''ve been feeling really low today."}'
+curl -X POST http://localhost:8000/chat -H "Content-Type: application/json" -H "Authorization: Bearer $SUPER_SECRET_TOKEN" -d '{"message": "Hey, what is your favourite colour?"}'
 ```
 
 If the user did not set the API key as an environment variable, or chose a different name for their environment variable, they will need to modify the above commands accordingly.
